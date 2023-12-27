@@ -23,36 +23,6 @@ def do_pack():
     return f_path
 
 def do_deploy(archive_path):
-    #!/usr/bin/python3
-"""
-Fabric script that distributes an archive to your web servers
-"""
-
-from datetime import datetime
-from fabric.api import *
-import os
-
-env.hosts = ["44.210.150.159", "35.173.47.15"]
-env.user = "ubuntu"
-
-
-def do_pack():
-    """
-        return the archive path if archive has generated correctly.
-    """
-
-    local("mkdir -p versions")
-    date = datetime.now().strftime("%Y%m%d%H%M%S")
-    archived_f_path = "versions/web_static_{}.tgz".format(date)
-    t_gzip_archive = local("tar -cvzf {} web_static".format(archived_f_path))
-
-    if t_gzip_archive.succeeded:
-        return archived_f_path
-    else:
-        return None
-
-
-def do_deploy(archive_path):
     """
         Distribute archive.
     """
@@ -74,4 +44,4 @@ def do_deploy(archive_path):
         print("New version deployed!")
         return True
 
-    return False  
+    return False
