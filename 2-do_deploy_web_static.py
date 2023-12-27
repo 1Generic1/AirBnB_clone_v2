@@ -24,24 +24,46 @@ def do_pack():
 
 def do_deploy(archive_path):
     """
-    Distributes an archive to web servers and deploys it
+    Distributes an archive to web servers and deploys it.
     """
-    if not os_path_exists(archive_path):
+    if not os.path.exists(archive_path):
+        print(f"Error: Archive file '{archive_path}' does not exist.")
         return False
-    
+
     try:
-        archive_name = archive_path.split('/')[-1]
+        # Extract relevant information from the archive path
+        archive_name = os.path.basename(archive_path)
+        version_name = os.path.splitext(archive_name)[0]
+
+        # Define paths
         tmp_path = '/tmp/{}'.format(archive_name)
-        put(archive_path, tmp_path, mode=0o644)
-        release_path = '/data/web_static/releases/{}'.format(archive_name.split('.')[0])
-        run('mkdir -p {}'.format(release_path))
-        run('tar -xzf {} -C {}'.format(tmp_path, release_path))
-        run('rm {}'.format(tmp_path))
+        release_path = '/data/web_static/releases/{}'.format(version_name)
         current_link = '/data/web_static/current'
-        run('rm -f {}'.format(current_link))
-        run('ln -s {} {}'.format(release_path, current_link))
+
+        # Upload archive to temporary location
+        put(archive_path, tmp_path)
+
+        # Create a directory for the new version
+        run('sudo mkdir -p {}'.format(release_path))
+
+        # Extract the contents of the archive
+        run('sudo tar -xzf {} -C {}'.format(tmp_path, release_path))
+
+        # Clean up temporary archive
+        run('sudo rm {}'.format(tmp_path))
+
+        # Move contents to the version directory
+        run('sudo mv {}/web_static/* {}'.format(release_path, release_path))
+
+        # Remove unnecessary directory
+        run('sudo rm -rf {}/web_static'.format(release_path))
+
+        # Update symbolic link to the new version
+        run('sudo rm -rf {}'.format(current_link))
+        run('sudo ln -s {} {}'.format(release_path, current_link))
+
         print("New version deployed!")
         return True
     except Exception as e:
-        print(e)
+        print(f"Error during deployment: {e}")
         return False
