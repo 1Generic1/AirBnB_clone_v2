@@ -80,9 +80,9 @@ def deploy():
     # Call do_pack function and store the path of the created archive
     archive_path = do_pack()
     if not archive_path:
-        return False
+        return 1
     try:
         return do_deploy(archive_path)
     except Exception as e:
         print(f"Error during deployment: {e}")
-        return False
+        return 0
