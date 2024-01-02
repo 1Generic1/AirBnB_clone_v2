@@ -5,7 +5,6 @@ Fabric script that distributes an archive to your web servers
 from fabric.api import env, put, run, local
 import os
 from datetime import datetime
-from os.path import exists as os_path_exists
 # Set the Fabric environment
 env.hosts = ['54.165.14.143', '100.25.162.205']
 env.user = 'ubuntu'
@@ -56,7 +55,7 @@ def do_deploy(archive_path):
 
         # Move contents to the version directory
         run('sudo mv -n  {}/web_static/* {}'.format
-                (release_path, release_path))
+            (release_path, release_path))
 
         # Remove unnecessary directory
         run('sudo rm -rf {}/web_static'.format(release_path))
