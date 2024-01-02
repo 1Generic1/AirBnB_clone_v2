@@ -63,7 +63,7 @@ def do_deploy(archive_path):
         # Update symbolic link to the new version
         run('sudo rm -rf {}'.format(current_link))
         run('sudo ln -s {} {}'.format(release_path, current_link))
-
+        print(f"Symbolic link updated: {current_link} -> {release_path}")
         print("New version deployed!")
         return True
     except Exception as e:
