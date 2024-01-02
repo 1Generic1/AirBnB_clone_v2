@@ -10,6 +10,7 @@ from os.path import exists as os_path_exists
 env.hosts = ['54.165.14.143', '100.25.162.205']
 env.user = 'ubuntu'
 
+
 def do_pack():
     """Generates a .tgz archive from the contents of the web_static folder."""
     local('sudo mkdir -p versions')
@@ -21,6 +22,7 @@ def do_pack():
     f_size = os.path.getsize(f_path)
     print(f"web_static packed: {f_path} -> {f_size}Bytes")
     return f_path
+
 
 def do_deploy(archive_path):
     """
@@ -53,7 +55,8 @@ def do_deploy(archive_path):
         run('sudo rm {}'.format(tmp_path))
 
         # Move contents to the version directory
-        run('sudo mv -n  {}/web_static/* {}'.format(release_path, release_path))
+        run('sudo mv -n  {}/web_static/* {}'.format
+                (release_path, release_path))
 
         # Remove unnecessary directory
         run('sudo rm -rf {}/web_static'.format(release_path))
