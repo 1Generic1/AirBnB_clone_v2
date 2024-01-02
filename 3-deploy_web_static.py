@@ -29,7 +29,7 @@ def do_deploy(archive_path):
     """
     if not os.path.exists(archive_path):
         print(f"Error: Archive file '{archive_path}' does not exist.")
-        return False
+        return 1
 
     try:
         # Extract relevant information from the archive path
@@ -66,10 +66,10 @@ def do_deploy(archive_path):
         run('sudo ln -s {} {}'.format(release_path, current_link))
 
         print("New version deployed!")
-        return True
+        return 0
     except Exception as e:
         print(f"Error during deployment: {e}")
-        return False
+        return 1
 
 
 def deploy():
