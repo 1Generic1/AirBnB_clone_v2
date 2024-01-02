@@ -2,13 +2,13 @@
 """
 Fabric script that distributes an archive to your web servers
 """
-from fabric.api import *
+from fabric.api import env, put, run, local
 import os
 from datetime import datetime
-from os.path import exists as os_path_exists
 # Set the Fabric environment
 env.hosts = ['54.165.14.143', '100.25.162.205']
 env.user = 'ubuntu'
+
 
 def do_pack():
     """Generates a .tgz archive from the contents of the web_static folder."""
@@ -21,6 +21,7 @@ def do_pack():
     f_size = os.path.getsize(f_path)
     print(f"web_static packed: {f_path} -> {f_size}Bytes")
     return f_path
+
 
 def do_deploy(archive_path):
     """
@@ -47,13 +48,15 @@ def do_deploy(archive_path):
         run('sudo mkdir -p {}'.format(release_path))
 
         # Extract the contents of the archive
-        run('sudo tar -xzf {} -C {}'.format(tmp_path, release_path))
+        run('sudo tar -xzf {} -C {}'.format
+            (tmp_path, release_path))
 
         # Clean up temporary archive
         run('sudo rm {}'.format(tmp_path))
 
         # Move contents to the version directory
-        run('sudo mv -n  {}/web_static/* {}'.format(release_path, release_path))
+        run('sudo mv -n  {}/web_static/* {}'.format
+            (release_path, release_path))
 
         # Remove unnecessary directory
         run('sudo rm -rf {}/web_static'.format(release_path))
@@ -67,6 +70,7 @@ def do_deploy(archive_path):
     except Exception as e:
         print(f"Error during deployment: {e}")
         return False
+
 
 def deploy():
     """
@@ -82,4 +86,3 @@ def deploy():
     except Exception as e:
         print(f"Error during deployment: {e}")
         return False
-
