@@ -66,3 +66,9 @@ class FileStorage():
                 k for k, v in self.__objects.items() if v == obj
             )
             del self.__objects[key_to_remove]
+
+    def close(self):
+        """
+        Calls reload() method for deserializing the JSON file to objects.
+        """
+        self.reload()
